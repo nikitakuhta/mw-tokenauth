@@ -1,4 +1,4 @@
-module github.com/gobuffalo/mw-tokenauth
+module github.com/nikitakuhta/mw-tokenauth
 
 go 1.13
 
