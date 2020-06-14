@@ -69,6 +69,7 @@ type Options struct {
 	SignMethod jwt.SigningMethod
 	GetKey     func(jwt.SigningMethod) (interface{}, error)
 	AuthScheme string
+	AllowEmptyKey bool // Don't provide error, if no token in request. Next handler
 }
 
 // New enables jwt token verification if no Sign method is provided,
@@ -94,6 +95,9 @@ func New(options Options) buffalo.MiddlewareFunc {
 		return func(c buffalo.Context) error {
 			// get Authorisation header value
 			authString := c.Request().Header.Get("Authorization")
+			if options.AllowEmptyKey && authString == "" {
+				return next(c)
+			}
 
 			tokenString, err := getJwtToken(authString, options.AuthScheme)
 			// if error on getting the token, return with status unauthorized
